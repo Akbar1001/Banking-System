@@ -7,7 +7,7 @@ const userSchema=mongoose.Schema({
         required:[true,"Eamil is required for creating a user"],
         trim:true,
         lowercase:true,
-        match:[/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/],
+        match:[/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/],
         unique:[true,"Eamil already exists"]
     },
     name:{
@@ -27,12 +27,12 @@ const userSchema=mongoose.Schema({
 userSchema.pre("save",async function (next) {
     
     if(!this.isModified("password")){
-        return next();
+        return ;
     }
 
     const hash= await bcrypt.hash(this.password,10);
     this.password=hash
-    return next();
+    return ;
 })
 
 userSchema.methods.comparePassword=async function(password){
@@ -40,6 +40,6 @@ userSchema.methods.comparePassword=async function(password){
     return await bcrypt.compare(password,this.password);
 }
 
-const userModel=mongoose.model("user",mongoose.Schema);
+const userModel=mongoose.model("user",userSchema);
 
-modeule.exports={userModel}
+module.exports={userModel}
