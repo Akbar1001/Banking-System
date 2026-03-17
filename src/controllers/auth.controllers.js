@@ -27,7 +27,7 @@ async function userRegistrationController(req,res){
     
     res.cookie("token",token);
 
-    res.status(200).json({
+    res.status(201).json({
         user:{
             _id:user._id,
             email:user.email,
@@ -37,4 +37,47 @@ async function userRegistrationController(req,res){
     })
 }
 
-module.exports={userRegistrationController}
+/**
+ * - user Login controller
+ * - POST /api/auth/login
+ */
+
+async function userLoginController(req,res){
+
+    const {email,password}=req.body;
+
+    const user = await userModel.findOne({email}).select("+password");
+
+    if(!user){
+        return res.status(422).json({
+            message:"User with this email does not exists",
+            status :"Failed"
+        })
+    }
+
+    const validPassword= await user.comparePassword(password);
+
+    if(!validPassword){
+        return res.status(422).json({
+            message:"Wrong password entered",
+            status :"Failed"
+        })
+    }
+
+    const token=jwt.sign({userId:user._id},process.env.JWT_SECRET,{expiresIn:"3d"});
+    
+    res.cookie("token",token);
+
+    res.status(200).json({
+        user:{
+            _id:user._id,
+            email:user.email,
+            name:user.name
+        },
+        token
+    })
+
+}
+
+
+module.exports={userRegistrationController,userLoginController}
