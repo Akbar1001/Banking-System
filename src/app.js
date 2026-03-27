@@ -12,9 +12,11 @@ const accountRouter=require("./routes/account.routes");
  * Routes Used
  */
 const app=express();
-
+app.use(cookieParser());
 app.use(express.json());
 app.use("/api/auth",authRouter);
-app.use(cookieParser());
+app.use("/api/accounts",accountRouter)
+
+
 
 module.exports=app;

@@ -9,6 +9,7 @@ const emailService=require("../services/email.service")
 */
 
 async function userRegistrationController(req,res){
+
     const {email,name,password}=req.body;
 
     const isExists = await userModel.findOne({

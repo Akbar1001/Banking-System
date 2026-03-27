@@ -1,6 +1,9 @@
 require("dotenv").config()
 
 const app=require("./src/app");
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
 
 const PORT=3000;
 
